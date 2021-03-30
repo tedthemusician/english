@@ -36,16 +36,9 @@
                "EIGHT"
                "NINE"])
 
-; Add the numerals 0 through 9 to the dictionary, using the corresponding
-; word's pronunciation
-; TODO: Don't do this once words/verbalize-numbers is fleshed out
-(def dict
-  (reduce-kv
-    (fn [acc k v] (assoc acc k (original-dict v)))
-    original-dict
-    numerals))
-
 (defn pronounce
   "Get the phonemes of a word, case-insensitive"
   [w]
   (dict (str/upper-case w)))
+
+
