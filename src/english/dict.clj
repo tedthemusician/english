@@ -2,13 +2,10 @@
   (:require [clojure.string :as str])
   (:gen-class))
 
-; TODO: Add numerals to final dictionary
-
 (def primary-def-re #"^[A-Z][^()\s]*  \S")
-; (def primary-def-re #"^[A-Z]  \S")
 
 (defn parse-word
-  "Get:
+  "Get as a pair:
     - The word being pronounced
     - Its component syllables as keywords"
   [s]
@@ -39,10 +36,16 @@
                "EIGHT"
                "NINE"])
 
+; Add the numerals 0 through 9 to the dictionary, using the corresponding
+; word's pronunciation
+; TODO: Don't do this once words/verbalize-numbers is fleshed out
 (def dict
   (reduce-kv
     (fn [acc k v] (assoc acc k (original-dict v)))
     original-dict
     numerals))
 
-(dict 1)
+(defn pronounce
+  "Get the phonemes of a word, case-insensitive"
+  [w]
+  (dict (str/upper-case w)))
