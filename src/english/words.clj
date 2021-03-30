@@ -12,10 +12,12 @@
    "/"
    ":"
    "\\|"
-   "\\.\\.+"
+   "\\.{2,}+"
    "\""])
 
 (def separators-re (re-pattern (str/join "|" separators)))
+
+(def number-re #"^\d[\d,]*(\.\d+)?$")
 
 (defn separate
   "Replace separating characters with spaces, then split the resulting words."
@@ -25,20 +27,14 @@
 (defn strip-non-alphanumeric
   "Strip all non-alphanumeric characters besides apostrophes from a word"
   [s]
-  (str/replace s #"[^\w\d']" ""))
-
-(defn verbalize-if-number
-  [s]
-  (if (re-find #"^\d[\d,]*(\.\d+)?" s)
+  (if (re-find number-re s)
     (numbers/verbalize s)
-    s))
-
-(def just-word (comp verbalize-if-number strip-non-alphanumeric))
+    (str/replace s #"[^\w\d']" "")))
 
 (defn just-words
   "Convert a string into words in which the only punctuation is an apostrophe"
   [s]
-  (flatten (remove empty? (map just-word (separate s)))))
+  (flatten (remove empty? (map strip-non-alphanumeric (separate s)))))
 
 (defn say
   "Phonemes for an entire string"

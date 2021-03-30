@@ -71,7 +71,7 @@
     (cond
       ; 1-digit number
       (nil? tens)
-      (numerals ones)
+      [(numerals ones)]
 
       ; 2-digit number
       (nil? hundreds)
