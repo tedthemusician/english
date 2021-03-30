@@ -40,5 +40,3 @@
   "Get the phonemes of a word, case-insensitive"
   [w]
   (dict (str/upper-case w)))
-
-
