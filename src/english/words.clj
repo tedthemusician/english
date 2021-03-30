@@ -1,7 +1,8 @@
 (ns english.words
   (:require [clojure.string :as str]
             [clojure.edn :as edn]
-            [english.dict :as dict])
+            [english.dict :as dict]
+            [english.numbers :as numbers])
   (:gen-class))
 
 (def separators
@@ -10,8 +11,8 @@
    "–" ; em dash
    "/"
    ":"
-   "\\."
    "\\|"
+   "\\.\\.+"
    "\""])
 
 (def separators-re (re-pattern (str/join "|" separators)))
@@ -26,29 +27,20 @@
   [s]
   (str/replace s #"[^\w\d']" ""))
 
-(defn verbalize-numbers
-  "For now, just remove numbers"
-  ; TODO: Convert numerals into words, then remove numerals from dict/dict
+(defn verbalize-if-number
   [s]
-  (if (number? (edn/read-string s))
-    ""
+  (if (re-find #"^\d[\d,]*(\.\d+)?" s)
+    (numbers/verbalize s)
     s))
 
-(def just-word (comp verbalize-numbers strip-non-alphanumeric))
+(def just-word (comp verbalize-if-number strip-non-alphanumeric))
 
 (defn just-words
   "Convert a string into words in which the only punctuation is an apostrophe"
   [s]
-  (remove empty? (map just-word (separate s))))
+  (flatten (remove empty? (map just-word (separate s)))))
 
 (defn say
   "Phonemes for an entire string"
   [s]
   (mapcat dict/pronounce (just-words s)))
-
-(def sentences
-  ["Time stops for...no one... really"
-   "It's not available--sorry for the inconvenience!"
-   "We expect never-before-seen levels."
-   "There are 525,600 minutes/year"])
-
