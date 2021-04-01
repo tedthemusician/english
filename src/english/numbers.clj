@@ -125,7 +125,7 @@
 (defn verbalize-decimal-component
   "Convert a string of numerals to their word counterparts"
   [s]
-  (map #(nth numerals %) (digits s)))
+  (map #(nth numerals %) (get-digits s)))
 
 (defn verbalize
   "Verbalize both the whole and decimal parts of a number. If there is no
