@@ -29,7 +29,7 @@
   [s]
   (if (re-find number-re s)
     (numbers/verbalize s)
-    (str/replace s #"[^\w\d']" "")))
+    (str/replace s #"([^\w\d']|_)" "")))
 
 (defn just-words
   "Convert a string into words in which the only punctuation is an apostrophe"
