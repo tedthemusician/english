@@ -69,22 +69,18 @@
         [[weight match] & _] (drop-while #(< (first %) rand-num) succs)]
     match))
 
-(defn generate-after
+(defn generate-next
   "Generate a Markov chain after an initial element"
   [freqs initial]
-  (iterate
-    (fn [elems]
-      (let [succ (next-elem freqs (last elems))]
-        (conj elems succ)))
-    [initial]))
+  (cons initial (lazy-seq (generate-next freqs (next-elem freqs initial)))))
 
 (defn generate
-  "Generate a sequence based on a Markov process. If only one argument is
-  specified, the result is an infinite lazy sequence. If two arguments are
-  supplied, the second argument specifies how many elements to return."
-  ([freqs]
-   (let [possible-starts (keys freqs)
-         start (rand-nth possible-starts)]
-     (generate-after freqs start)))
-  ([freqs n]
-   (nth (generate freqs) n)))
+  "Generate a sequence of n elements based on a Markov process specified by
+  freqs."
+  [freqs n]
+  (take n (generate-next freqs (next-elem freqs nil))))
+
+(defn imitate
+  "Imitate a collection for n elements"
+  [coll n]
+  (generate (ranged-succs coll) n))
