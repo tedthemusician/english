@@ -23,20 +23,10 @@
                 (map parse-word))))
 
 
-(def original-dict (parse-dict (slurp "resources/dict.txt")))
-
-(def numerals ["ZERO"
-               "ONE"
-               "TWO"
-               "THREE"
-               "FOUR"
-               "FIVE"
-               "SIX"
-               "SEVEN"
-               "EIGHT"
-               "NINE"])
+(def dict (parse-dict (slurp "resources/dict.txt")))
 
 (defn pronounce
   "Get the phonemes of a word, case-insensitive"
   [w]
-  (dict (str/upper-case w)))
+  (try (get dict (str/upper-case w))
+       (catch Exception e (print (str "PROBLEM: " (.getMessage e))))))
